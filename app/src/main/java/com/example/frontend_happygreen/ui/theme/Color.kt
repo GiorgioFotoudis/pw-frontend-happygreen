@@ -2,10 +2,10 @@ package com.example.frontend_happygreen.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val Green200 = Color(0xFF81C784) // Verde chiaro
+val Green500 = Color(0xFF4CAF50) // Verde principale
+val Green700 = Color(0xFF388E3C) // Verde scuro
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val LightGreen = Color(0xFFB2FF59) // Verde chiaro per sfondi
+val DarkGreen = Color(0xFF1B5E20) // Verde scuro per elementi principali
+val AccentGreen = Color(0xFF00C853) // Verde accento per bottoni

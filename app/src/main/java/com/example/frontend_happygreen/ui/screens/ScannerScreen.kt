@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.dp
 import com.example.frontend_happygreen.ui.components.CameraPreview
 
 @Composable
-fun ScanScreen(
+fun ScannerScreen(
     onObjectConfirmed: (String) -> Unit = {}
 ) {
     var recognizedLabel by remember { mutableStateOf("Nessun oggetto riconosciuto") }
