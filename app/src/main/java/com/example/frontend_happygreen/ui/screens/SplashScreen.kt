@@ -6,6 +6,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.navigation.*
 import kotlinx.coroutines.delay
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import com.example.frontend_happygreen.R
+
 
 @Composable
 fun SplashScreen(navController: NavController) {
@@ -20,7 +25,13 @@ fun SplashScreen(navController: NavController) {
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Text("🌱 HappyGreen", style = MaterialTheme.typography.headlineMedium)
-        // Qui poi inserirai il logo
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Logo HappyGreen"
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("🌱 HappyGreen", style = MaterialTheme.typography.headlineMedium)
+        }
     }
 }
