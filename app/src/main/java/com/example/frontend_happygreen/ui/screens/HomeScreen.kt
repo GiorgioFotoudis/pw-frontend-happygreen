@@ -1,14 +1,17 @@
 package com.example.frontend_happygreen.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
+import com.example.frontend_happygreen.R
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -20,7 +23,10 @@ fun HomeScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("Benvenuto!", style = MaterialTheme.typography.headlineMedium)
-
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "Logo HappyGreen"
+        )
         Row(
             horizontalArrangement = Arrangement.spacedBy(32.dp),
             verticalAlignment = Alignment.CenterVertically
