@@ -70,7 +70,7 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.converter.kotlinx.serialization)
-    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.serialization.json.v163)
     implementation(libs.logging.interceptor)
 
 }
