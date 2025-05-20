@@ -1,6 +1,8 @@
-package com.example.frontend_happygreen.ui.data.model
+package com.example.frontend_happygreen.data.model
 
-@kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class UserProfileDto(
     val id: Int,
     val username: String,
