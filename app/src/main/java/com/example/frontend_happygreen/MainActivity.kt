@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                         token = "finto_token_per_test",
                         onGroupCreated = { navController.navigate("group_create") }) }
                     composable("quiz") { QuizScreen() }
-                    composable("profile") { ProfileScreen() }
+                    composable("profile") { ProfileScreen(navController) }
                     composable("scanner") { ScannerScreen() }
                     composable("barcode_scanner") { BarcodeScannerScreen() }
                 }
