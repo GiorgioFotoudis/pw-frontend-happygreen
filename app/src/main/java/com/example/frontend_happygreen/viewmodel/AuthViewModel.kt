@@ -1,11 +1,76 @@
 package com.example.frontend_happygreen.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.frontend_happygreen.data.model.*
+import androidx.lifecycle.viewModelScope
+import com.example.frontend_happygreen.data.model.TokenDto
+import com.example.frontend_happygreen.data.model.UserProfileDto
+import com.example.frontend_happygreen.data.model.LoginRequest
+import com.example.frontend_happygreen.data.remote.ApiClient
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class AuthViewModel : ViewModel() {
-    var userProfile: UserProfileDto? = null
-    var token: String? = null
 
-    // login(), register(), getProfile()... (da fare)
+    private val api = ApiClient.service
+
+    private val _token = MutableStateFlow<String?>(null)
+    val token: StateFlow<String?> = _token
+
+    private val _userProfile = MutableStateFlow<UserProfileDto?>(null)
+    val userProfile: StateFlow<UserProfileDto?> = _userProfile
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
+    private val _loginError = MutableStateFlow<String?>(null)
+    val loginError: StateFlow<String?> = _loginError
+
+    fun login(username: String, password: String) {
+        _isLoading.value = true
+        _loginError.value = null
+
+        viewModelScope.launch {
+            runCatching {
+                val response: TokenDto = api.login(LoginRequest(username, password))
+                _token.value = response.access
+
+                // Dopo login, carica anche il profilo
+                val profile = api.getProfile("Bearer ${response.access}")
+                _userProfile.value = profile
+
+            }.onFailure { e ->
+                _loginError.value = "Login fallito: ${e.localizedMessage}"
+            }.also {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun register(username: String, email: String, password: String, password2: String, onSuccess: () -> Unit) {
+        _isLoading.value = true
+        _loginError.value = null
+        viewModelScope.launch {
+            runCatching {
+                val request = com.example.frontend_happygreen.data.model.RegisterRequest(
+                    username = username,
+                    email = email,
+                    password = password,
+                    password2 = password2
+                )
+                val result = api.register(request)
+                _userProfile.value = result
+                onSuccess()
+            }.onFailure {
+                _loginError.value = "Registrazione fallita: ${it.localizedMessage}"
+            }.also {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun logout() {
+        _token.value = null
+        _userProfile.value = null
+    }
 }

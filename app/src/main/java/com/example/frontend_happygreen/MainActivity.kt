@@ -20,6 +20,7 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController = navController, startDestination = "splash") {
                     composable("splash") { SplashScreen(navController) }
                     composable("login") { LoginScreen(navController) }
+                    composable("register") { RegisterScreen(navController) }
                     composable("home") { HomeScreen(navController) }
                     composable("group_create") { GroupCreateFormScreen (
                         token = "finto_token_per_test",

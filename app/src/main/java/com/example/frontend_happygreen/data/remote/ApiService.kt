@@ -8,17 +8,17 @@ import okhttp3.RequestBody
 interface ApiService {
 
     // ---------- AUTENTICAZIONE ----------
-    @POST("api/login/")
+    @POST("api/auth/login/")
     suspend fun login(
         @Body body: LoginRequest
     ): TokenDto
 
-    @POST("api/register/")
+    @POST("api/auth/register/")
     suspend fun register(
         @Body body: RegisterRequest
     ): UserProfileDto
 
-    @GET("api/profile/")
+    @GET("api/auth/profile/")
     suspend fun getProfile(
         @Header("Authorization") token: String
     ): UserProfileDto
