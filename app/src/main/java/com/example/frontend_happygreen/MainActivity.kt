@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.*
 import com.example.frontend_happygreen.ui.screens.*
 import com.example.frontend_happygreen.ui.theme.FrontendhappygreenTheme
-import com.example.frontendhappygreen.ui.screens.ScannerScreen
+import com.example.frontend_happygreen.ui.screens.ScannerScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
