@@ -21,7 +21,9 @@ class MainActivity : ComponentActivity() {
                     composable("splash") { SplashScreen(navController) }
                     composable("login") { LoginScreen(navController) }
                     composable("home") { HomeScreen(navController) }
-                    composable("group_create") { GroupCreateScreen(token = "finto_token_per_test") }
+                    composable("group_create") { GroupCreateFormScreen (
+                        token = "finto_token_per_test",
+                        onGroupCreated = { navController.navigate("group_create") }) }
                     composable("quiz") { QuizScreen() }
                     composable("profile") { ProfileScreen() }
                     composable("scanner") { ScannerScreen() }

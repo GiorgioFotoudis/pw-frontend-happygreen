@@ -24,6 +24,12 @@ interface ApiService {
     ): UserProfileDto
 
     // ---------- GRUPPI ----------
+    @POST("gruppi/")
+    suspend fun createGroup(
+        @Header("Authorization") token: String,
+        @Body body: Map<String, String>
+    ): GruppoDto
+
     @GET("api/gruppi/")
     suspend fun getAllGroups(
         @Header("Authorization") token: String

@@ -21,6 +21,23 @@ class GroupViewModel : ViewModel() {
     private val _iscrizioneSuccess = MutableStateFlow<Boolean?>(null)
     val iscrizioneSuccess: StateFlow<Boolean?> get() = _iscrizioneSuccess
 
+    fun creaGruppo(nome: String, descrizione: String, token: String, onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            runCatching {
+                val body = mapOf(
+                    "nome" to nome,
+                    "descrizione" to descrizione
+                )
+                api.createGroup("Bearer $token", body)
+            }.onSuccess {
+                loadAllGroups(token)
+                onResult(true)
+            }.onFailure {
+                onResult(false)
+            }
+        }
+    }
+
     // Recupera tutti i gruppi disponibili
     fun loadAllGroups(token: String) {
         viewModelScope.launch {
