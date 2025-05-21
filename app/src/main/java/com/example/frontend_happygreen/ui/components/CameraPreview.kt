@@ -42,7 +42,7 @@ fun CameraPreview(
             val preview = Preview.Builder()
                 .build()
                 .also {
-                    it.setSurfaceProvider(view.surfaceProvider)
+                    it.surfaceProvider = view.surfaceProvider
                 }
 
             val imageAnalysis = ImageAnalysis.Builder()
