@@ -39,9 +39,7 @@ class MainActivity : ComponentActivity() {
                     ) { backStackEntry ->
                         val gruppoId = backStackEntry.arguments?.getInt("groupId") ?: return@composable
                         val authViewModel: AuthViewModel = viewModel()
-                        val token = authViewModel.token.collectAsState().value
-
-                        if (token == null) return@composable
+                        val token = authViewModel.token.collectAsState().value ?: return@composable
 
                         GroupFeedScreen(
                             gruppoId = gruppoId,

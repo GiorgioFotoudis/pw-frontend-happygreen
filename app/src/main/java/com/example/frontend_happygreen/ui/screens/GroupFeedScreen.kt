@@ -1,6 +1,6 @@
 package com.example.frontend_happygreen.ui.screens
 
-import CommentViewModel
+import com.example.frontend_happygreen.viewmodel.CommentViewModel
 import CommentoRichiesta
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -29,7 +29,7 @@ fun GroupFeedScreen(
     val posts by postViewModel.posts.collectAsState()
 
     LaunchedEffect(gruppoId, token) {
-        token?.let{
+        token.let{
             postViewModel.loadPostsByGroup(gruppoId, it)
         }
     }

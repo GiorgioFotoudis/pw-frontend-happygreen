@@ -1,3 +1,6 @@
+package com.example.frontend_happygreen.viewmodel
+
+import CommentoRichiesta
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.frontend_happygreen.data.model.CommentoDto
