@@ -17,6 +17,9 @@ import com.example.frontend_happygreen.viewmodel.PostViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import android.widget.Toast
 import java.io.File
+import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun NewPostScreen(
@@ -25,6 +28,7 @@ fun NewPostScreen(
     navController: NavController,
     postViewModel: PostViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
+
     val context = LocalContext.current
 
     var descrizione by remember { mutableStateOf("") }
@@ -37,10 +41,11 @@ fun NewPostScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.LightGray)
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text("Nuovo Post", style = MaterialTheme.typography.titleLarge)
+        Text("Nuovo Post", style = MaterialTheme.typography.titleLarge, color = Color.Black)
 
         OutlinedTextField(
             value = descrizione,

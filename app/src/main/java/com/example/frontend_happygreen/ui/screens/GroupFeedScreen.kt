@@ -44,7 +44,10 @@ fun GroupFeedScreen(
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 navController.navigate("group_create_post/$gruppoId")
-            }) {
+            },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            ) {
                 Icon(Icons.Default.Add, contentDescription = "Crea nuovo post")
             }
         }
