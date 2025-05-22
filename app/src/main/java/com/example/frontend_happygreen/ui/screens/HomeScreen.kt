@@ -88,10 +88,6 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("Benvenuto!", style = MaterialTheme.typography.headlineMedium)
-        Image(
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo HappyGreen"
-        )
 
         // Sezione bottoni rapidi
         Row(
