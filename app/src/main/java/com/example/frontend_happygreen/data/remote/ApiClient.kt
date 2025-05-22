@@ -10,7 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 
 object ApiClient {
 
-    private const val BASE_URL = "http://172.17.5.163:8000/"
+    private const val BASE_URL = "http://172.17.5.206:8000/" // per emulatore Android
 
     private val contentType = "application/json".toMediaType()
 

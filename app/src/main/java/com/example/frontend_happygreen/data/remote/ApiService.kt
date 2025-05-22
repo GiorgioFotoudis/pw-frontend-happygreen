@@ -1,5 +1,6 @@
 package com.example.frontend_happygreen.data.remote
 
+import CommentoRichiesta
 import com.example.frontend_happygreen.data.model.*
 import retrofit2.http.*
 import okhttp3.MultipartBody
@@ -24,7 +25,7 @@ interface ApiService {
     ): UserProfileDto
 
     // ---------- GRUPPI ----------
-    @POST("gruppi/")
+    @POST("api/gruppi/")
     suspend fun createGroup(
         @Header("Authorization") token: String,
         @Body body: Map<String, String>
@@ -48,7 +49,7 @@ interface ApiService {
 
     // ---------- POST ----------
     @GET("api/posts/")
-    suspend fun getAllPosts(
+    suspend fun getPosts(
         @Header("Authorization") token: String
     ): List<PostDto>
 
@@ -67,14 +68,14 @@ interface ApiService {
 
     // ---------- COMMENTI ----------
     @GET("api/posts/commenti/")
-    suspend fun getAllComments(
+    suspend fun getCommenti(
         @Header("Authorization") token: String
     ): List<CommentoDto>
 
     @POST("api/posts/commenti/")
-    suspend fun createComment(
+    suspend fun aggiungiCommento(
         @Header("Authorization") token: String,
-        @Body comment: CommentoDto // oppure crea un DTO dedicato per l'invio
+        @Body comment: CommentoRichiesta // oppure crea un DTO dedicato per l'invio
     ): CommentoDto
 
     // ---------- QUIZ ----------

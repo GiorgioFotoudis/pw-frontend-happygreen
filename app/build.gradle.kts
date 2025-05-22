@@ -1,3 +1,5 @@
+import com.android.tools.r8.internal.kt
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -75,4 +77,5 @@ dependencies {
     implementation(libs.kotlinx.serialization.json) //.163
 
     implementation(libs.barcode.scanning)
+    implementation(libs.coil.compose)
 }

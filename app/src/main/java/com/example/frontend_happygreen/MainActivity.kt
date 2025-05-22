@@ -4,10 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.*
+import androidx.navigation.navArgument
 import com.example.frontend_happygreen.ui.screens.*
 import com.example.frontend_happygreen.ui.theme.FrontendhappygreenTheme
 import com.example.frontend_happygreen.ui.screens.ScannerScreen
+import com.example.frontend_happygreen.viewmodel.AuthViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +34,22 @@ class MainActivity : ComponentActivity() {
                     composable("profile") { ProfileScreen(navController) }
                     composable("scanner") { ScannerScreen() }
                     composable("barcode_scanner") { BarcodeScannerScreen() }
+                    composable("group_feed/{groupId}",
+                        arguments = listOf(navArgument("groupId") { type = NavType.IntType })
+                    ) { backStackEntry ->
+                        val gruppoId = backStackEntry.arguments?.getInt("groupId") ?: return@composable
+                        val authViewModel: AuthViewModel = viewModel()
+                        val token = authViewModel.token.collectAsState().value
+
+                        if (token == null) return@composable
+
+                        GroupFeedScreen(
+                            gruppoId = gruppoId,
+                            token = token,
+                            navController = navController,
+                            authViewModel = authViewModel
+                        )
+                    }
                 }
             }
         }
