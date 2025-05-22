@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -27,9 +28,17 @@ class MainActivity : ComponentActivity() {
                     composable("login") { LoginScreen(navController) }
                     composable("register") { RegisterScreen(navController) }
                     composable("home") { HomeScreen(navController) }
-                    composable("group_create") { GroupCreateFormScreen (
-                        token = "finto_token_per_test",
-                        onGroupCreated = { navController.navigate("group_create") }) }
+                    composable("group_create") {
+                        val authViewModel: AuthViewModel = viewModel()
+                        val token = authViewModel.token.collectAsState().value
+                        token?.let {
+                            GroupCreateFormScreen(
+                                token = it,
+                                onGroupCreated = { navController.navigate("home") }
+                            )
+                        } ?: Text("Token non disponibile")
+                    }
+
                     composable("quiz") { QuizScreen() }
                     composable("profile") { ProfileScreen(navController) }
                     composable("scanner") { ScannerScreen() }

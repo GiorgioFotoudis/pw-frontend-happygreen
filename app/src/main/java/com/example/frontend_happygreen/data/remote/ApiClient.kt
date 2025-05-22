@@ -10,7 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 
 object ApiClient {
 
-    private const val BASE_URL = "https://041c-79-8-186-194.ngrok-free.app"
+    private const val BASE_URL = "https://2c2e-151-34-7-8.ngrok-free.app"
 
     private val contentType = "application/json".toMediaType()
 
