@@ -1,5 +1,25 @@
 package com.example.frontend_happygreen.ui.screens
 
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.*
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.frontend_happygreen.viewmodel.PostViewModel
+
+@Composable
+fun NewPostScreen(
+    gruppoId: Int,
+    token: String,
+    navController: NavController,
+    postViewModel: PostViewModel = viewModel()
+) {
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text("Schermata: Nuovo post")
+    }
+}
+/*
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -7,7 +27,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -26,7 +45,7 @@ fun NewPostScreen(
     gruppoId: Int,
     token: String,
     navController: NavController,
-    postViewModel: PostViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    postViewModel: PostViewModel = viewModel()
 ) {
 
     val context = LocalContext.current
@@ -105,4 +124,4 @@ fun NewPostScreen(
             Text("Pubblica")
         }
     }
-}
+}*/
