@@ -63,7 +63,7 @@ interface ApiService {
         @Part("latitudine") latitudine: RequestBody,
         @Part("longitudine") longitudine: RequestBody,
         @Part("riconoscimento") riconoscimento: RequestBody,
-        @Part immagine: MultipartBody.Part
+        @Part immagine: MultipartBody.Part?
     ): PostDto
 
     // ---------- COMMENTI ----------

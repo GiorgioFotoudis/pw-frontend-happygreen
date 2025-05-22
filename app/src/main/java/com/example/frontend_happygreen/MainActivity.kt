@@ -91,6 +91,19 @@ class MainActivity : ComponentActivity() {
                             authViewModel = authViewModel
                         )
                     }
+                    composable("group_create_post/{groupId}",
+                        arguments = listOf(navArgument("groupId") { type = NavType.IntType })
+                    ) { backStackEntry ->
+                        val gruppoId = backStackEntry.arguments?.getInt("groupId") ?: return@composable
+                        val authViewModel: AuthViewModel = viewModel()
+                        val token = authViewModel.token.collectAsState().value ?: return@composable
+
+                        NewPostScreen(
+                            gruppoId = gruppoId,
+                            token = token,
+                            navController = navController
+                        )
+                    }
                 }
             }
         }
