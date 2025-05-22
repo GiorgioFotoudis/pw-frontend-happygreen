@@ -78,4 +78,6 @@ dependencies {
 
     implementation(libs.barcode.scanning)
     implementation(libs.coil.compose)
+    implementation(libs.converter.scalars)
+    implementation(libs.okhttp)
 }

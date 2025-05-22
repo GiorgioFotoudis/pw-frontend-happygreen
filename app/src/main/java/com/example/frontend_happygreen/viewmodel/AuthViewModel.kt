@@ -26,22 +26,18 @@ class AuthViewModel : ViewModel() {
     private val _loginError = MutableStateFlow<String?>(null)
     val loginError: StateFlow<String?> = _loginError
 
-    fun login(username: String, password: String) {
-        _isLoading.value = true
-        _loginError.value = null
-
+    fun login(username: String, password: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
-            runCatching {
-                val response: TokenDto = api.login(LoginRequest(username, password))
+            _isLoading.value = true
+            try {
+                val response = ApiClient.service.login(LoginRequest(username, password))
                 _token.value = response.access
-
-                // Dopo login, carica anche il profilo
-                val profile = api.getProfile("Bearer ${response.access}")
-                _userProfile.value = profile
-
-            }.onFailure { e ->
+                _loginError.value = null
+                onSuccess()
+            } catch (e: Exception) {
                 _loginError.value = "Login fallito: ${e.localizedMessage}"
-            }.also {
+                onError(e.localizedMessage ?: "Errore")
+            } finally {
                 _isLoading.value = false
             }
         }

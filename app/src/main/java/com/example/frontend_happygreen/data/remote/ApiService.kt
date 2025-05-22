@@ -56,13 +56,13 @@ interface ApiService {
     // Creazione post (richiede multipart)
     @Multipart
     @POST("api/posts/")
-    suspend fun createPost(
+    suspend fun creaPost(
         @Header("Authorization") token: String,
-        @Part("gruppo") gruppo: RequestBody,
-        @Part("riconoscimento") riconoscimento: RequestBody,
+        @Part("gruppo") gruppo: Int,
         @Part("descrizione") descrizione: RequestBody,
         @Part("latitudine") latitudine: RequestBody,
         @Part("longitudine") longitudine: RequestBody,
+        @Part("riconoscimento") riconoscimento: RequestBody,
         @Part immagine: MultipartBody.Part
     ): PostDto
 
