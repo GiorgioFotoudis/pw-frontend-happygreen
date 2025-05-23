@@ -95,6 +95,13 @@ interface ApiService {
         @Body risultato: RisultatoQuizDto
     ): RisultatoQuizDto
 
+    /*@POST("api/quiz/{quizId}/submit/")
+    suspend fun submitQuiz(
+        @Path("quizId") quizId: Int,
+        @Header("Authorization") token: String,
+        @Body submission: QuizSubmissionDto
+    ): QuizResultDto*/
+
     // ---------- PRODOTTI ----------
     @GET("api/prodotti/")
     suspend fun getAllProducts(
