@@ -1,5 +1,6 @@
 package com.example.frontend_happygreen.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.frontend_happygreen.data.model.PostDto
@@ -20,64 +21,31 @@ class PostViewModel : ViewModel() {
     private val _posts = MutableStateFlow<List<PostDto>>(emptyList())
     val posts: StateFlow<List<PostDto>> get() = _posts
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> get() = _isLoading
+
     fun loadPostsByGroup(gruppoId: Int, token: String) {
         viewModelScope.launch {
+            _isLoading.value = true
             runCatching {
+                Log.d("PostViewModel", "Caricando post per gruppo: $gruppoId")
                 val allPosts = api.getPosts("Bearer $token")
-                allPosts.filter { it.gruppo == gruppoId }
-            }.onSuccess {
-                _posts.value = it
-            }.onFailure {
+                Log.d("PostViewModel", "Post totali ricevuti: ${allPosts.size}")
+                val filteredPosts = allPosts.filter { it.gruppo == gruppoId }
+                Log.d("PostViewModel", "Post filtrati per gruppo $gruppoId: ${filteredPosts.size}")
+                filteredPosts
+            }.onSuccess { filteredPosts ->
+                _posts.value = filteredPosts
+                Log.d("PostViewModel", "Post caricati con successo: ${filteredPosts.size}")
+            }.onFailure { exception ->
+                Log.e("PostViewModel", "Errore nel caricamento post: ${exception.message}", exception)
                 _posts.value = emptyList()
+            }.also {
+                _isLoading.value = false
             }
         }
     }
 
-    /*fun creaPost(
-        gruppoId: Int,
-        descrizione: String,
-        latitudine: Double,
-        longitudine: Double,
-        imageFile: File,
-        riconoscimento: String,
-        token: String,
-        onSuccess: () -> Unit,
-        onError: (String) -> Unit
-    ) {
-        viewModelScope.launch {
-            try {
-                val requestImage = imageFile
-                    .asRequestBody("image/*".toMediaTypeOrNull())
-                val imagePart = MultipartBody.Part
-                    .createFormData("immagine", imageFile.name, requestImage)
-
-                val descrizionePart = descrizione
-                    .toRequestBody("text/plain".toMediaTypeOrNull())
-                val latitudinePart = latitudine.toString()
-                    .toRequestBody("text/plain".toMediaTypeOrNull())
-                val longitudinePart = longitudine.toString()
-                    .toRequestBody("text/plain".toMediaTypeOrNull())
-                val riconoscimentoPart = riconoscimento.toString()
-                    .toRequestBody("text/plain".toMediaTypeOrNull())
-
-                api.creaPost(
-                    token = "Bearer $token",
-                    gruppo = gruppoId,
-                    descrizione = descrizionePart,
-                    latitudine = latitudinePart,
-                    longitudine = longitudinePart,
-                    immagine = imagePart,
-                    riconoscimento = riconoscimentoPart
-                )
-
-                onSuccess()
-            } catch (e: Exception) {
-                onError(e.localizedMessage ?: "Errore durante l'invio del post.")
-            }
-        }
-    }*/
-
-     */
     fun creaPost(
         gruppoId: Int,
         descrizione: String,
@@ -91,6 +59,12 @@ class PostViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
+                Log.d("PostViewModel", "Creando post per gruppo: $gruppoId")
+                Log.d("PostViewModel", "Descrizione: $descrizione")
+                Log.d("PostViewModel", "Immagine: ${imageFile?.name ?: "Nessuna"}")
+
+                // CORREZIONE: gruppo deve essere RequestBody
+                val reqGruppo = gruppoId.toString().toRequestBody("text/plain".toMediaTypeOrNull())
                 val reqDescrizione = descrizione.toRequestBody("text/plain".toMediaTypeOrNull())
                 val reqLat = latitudine.toString().toRequestBody("text/plain".toMediaTypeOrNull())
                 val reqLong = longitudine.toString().toRequestBody("text/plain".toMediaTypeOrNull())
@@ -103,18 +77,28 @@ class PostViewModel : ViewModel() {
 
                 val post = api.creaPost(
                     token = "Bearer $token",
-                    gruppo = gruppoId,
+                    gruppo = reqGruppo, // Ora è RequestBody
                     descrizione = reqDescrizione,
                     latitudine = reqLat,
                     longitudine = reqLong,
                     riconoscimento = reqRiconoscimento,
                     immagine = imagePart
                 )
+
+                Log.d("PostViewModel", "Post creato con successo: ${post.id}")
+
+                // Ricarica i post per il gruppo corrente
+                loadPostsByGroup(gruppoId, token)
+
                 onSuccess()
             } catch (e: Exception) {
+                Log.e("PostViewModel", "Errore nella creazione del post: ${e.message}", e)
                 onError("Errore: ${e.message}")
             }
         }
     }
-}
 
+    fun refreshPosts(gruppoId: Int, token: String) {
+        loadPostsByGroup(gruppoId, token)
+    }
+}

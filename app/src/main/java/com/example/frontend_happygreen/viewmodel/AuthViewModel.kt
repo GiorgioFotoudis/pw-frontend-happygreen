@@ -65,6 +65,21 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    fun loadUserProfile(token: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val profile = api.getProfile("Bearer $token") // Assumendo che hai questo endpoint
+                _userProfile.value = profile
+            } catch (e: Exception) {
+                // Gestisci l'errore se necessario
+                android.util.Log.e("AuthViewModel", "Errore nel caricamento profilo: ${e.localizedMessage}")
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
     fun logout() {
         _token.value = null
         _userProfile.value = null

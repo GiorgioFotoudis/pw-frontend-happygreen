@@ -1,25 +1,3 @@
-package com.example.frontend_happygreen.ui.screens
-
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.*
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import com.example.frontend_happygreen.viewmodel.PostViewModel
-
-@Composable
-fun NewPostScreen(
-    gruppoId: Int,
-    token: String,
-    navController: NavController,
-    postViewModel: PostViewModel = viewModel()
-) {
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Schermata: Nuovo post")
-    }
-}
-/*
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -52,9 +30,16 @@ fun NewPostScreen(
 
     var descrizione by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
 
     val imagePicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         selectedImageUri = uri
+    }
+
+    // Debug: Log del token e gruppoId
+    LaunchedEffect(token, gruppoId) {
+        Log.d("NewPostScreen", "Token: $token")
+        Log.d("NewPostScreen", "GruppoId: $gruppoId")
     }
 
     Column(
@@ -70,10 +55,14 @@ fun NewPostScreen(
             value = descrizione,
             onValueChange = { descrizione = it },
             label = { Text("Descrizione") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !isLoading
         )
 
-        Button(onClick = { imagePicker.launch("image/*") }) {
+        Button(
+            onClick = { imagePicker.launch("image/*") },
+            enabled = !isLoading
+        ) {
             Text("Seleziona immagine (opzionale)")
         }
 
@@ -94,10 +83,14 @@ fun NewPostScreen(
                     return@Button
                 }
 
+                isLoading = true
+                Log.d("NewPostScreen", "Iniziando creazione post...")
+
                 val imageFile = selectedImageUri?.let { uri ->
                     try {
                         File(uri.path!!)
                     } catch (e: Exception) {
+                        Log.e("NewPostScreen", "Errore nel processare l'immagine: ${e.message}")
                         null
                     }
                 }
@@ -111,17 +104,29 @@ fun NewPostScreen(
                     token = token,
                     imageFile = imageFile,
                     onSuccess = {
-                        Toast.makeText(context, "Post creato!", Toast.LENGTH_SHORT).show()
+                        Log.d("NewPostScreen", "Post creato con successo!")
+                        isLoading = false
+                        Toast.makeText(context, "Post creato con successo!", Toast.LENGTH_SHORT).show()
                         navController.popBackStack()
                     },
-                    onError = {
-                        Toast.makeText(context, "Errore: $it", Toast.LENGTH_LONG).show()
+                    onError = { errorMessage ->
+                        Log.e("NewPostScreen", "Errore nella creazione del post: $errorMessage")
+                        isLoading = false
+                        Toast.makeText(context, "Errore: $errorMessage", Toast.LENGTH_LONG).show()
                     }
                 )
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !isLoading
         ) {
-            Text("Pubblica")
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(16.dp),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+            }
+            Text(if (isLoading) "Pubblicando..." else "Pubblica")
         }
     }
-}*/
+}

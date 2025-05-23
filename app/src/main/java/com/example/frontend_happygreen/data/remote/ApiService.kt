@@ -53,12 +53,12 @@ interface ApiService {
         @Header("Authorization") token: String
     ): List<PostDto>
 
-    // Creazione post (richiede multipart)
+    // CORREZIONE: gruppo deve essere RequestBody, non Int diretto
     @Multipart
     @POST("api/posts/")
     suspend fun creaPost(
         @Header("Authorization") token: String,
-        @Part("gruppo") gruppo: Int,
+        @Part("gruppo") gruppo: RequestBody, // Cambiato da Int a RequestBody
         @Part("descrizione") descrizione: RequestBody,
         @Part("latitudine") latitudine: RequestBody,
         @Part("longitudine") longitudine: RequestBody,
@@ -67,15 +67,15 @@ interface ApiService {
     ): PostDto
 
     // ---------- COMMENTI ----------
-    @GET("api/posts/commenti/")
+    @GET("api/commenti/")
     suspend fun getCommenti(
         @Header("Authorization") token: String
     ): List<CommentoDto>
 
-    @POST("api/posts/commenti/")
+    @POST("api/commenti/")
     suspend fun aggiungiCommento(
         @Header("Authorization") token: String,
-        @Body comment: CommentoRichiesta // oppure crea un DTO dedicato per l'invio
+        @Body comment: CommentoRichiesta
     ): CommentoDto
 
     // ---------- QUIZ ----------
@@ -122,5 +122,4 @@ interface ApiService {
     suspend fun getUserBadges(
         @Header("Authorization") token: String
     ): List<UtenteBadgeDto>
-
 }

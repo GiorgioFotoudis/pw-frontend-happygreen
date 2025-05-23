@@ -7,6 +7,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,7 +20,9 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.frontend_happygreen.viewmodel.AuthViewModel
 import com.example.frontend_happygreen.viewmodel.CommentViewModel
 import com.example.frontend_happygreen.viewmodel.PostViewModel
+import android.util.Log
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupFeedScreen(
     gruppoId: Int,
@@ -29,8 +32,22 @@ fun GroupFeedScreen(
     authViewModel: AuthViewModel = viewModel()
 ) {
     val posts by postViewModel.posts.collectAsState()
+    var isRefreshing by remember { mutableStateOf(false) }
+
+    // Debug logs
     LaunchedEffect(gruppoId, token) {
+        Log.d("GroupFeedScreen", "GruppoId: $gruppoId, Token: ${token.take(20)}...")
+        isRefreshing = true
         postViewModel.loadPostsByGroup(gruppoId, token)
+        isRefreshing = false
+    }
+
+    // Log quando cambiano i posts
+    LaunchedEffect(posts) {
+        Log.d("GroupFeedScreen", "Posts caricati: ${posts.size}")
+        posts.forEach { post ->
+            Log.d("GroupFeedScreen", "Post ID: ${post.id}, Descrizione: ${post.descrizione}")
+        }
     }
 
     val commentViewModel: CommentViewModel = viewModel()
@@ -38,9 +55,31 @@ fun GroupFeedScreen(
 
     LaunchedEffect(token) {
         commentViewModel.caricaCommenti(token)
+        // Carica anche il profilo utente se non è già caricato
+        if (authViewModel.userProfile.value == null) {
+            authViewModel.loadUserProfile(token)
+        }
+    }
+
+    // Funzione per ricaricare i dati
+    fun refreshData() {
+        isRefreshing = true
+        postViewModel.loadPostsByGroup(gruppoId, token)
+        commentViewModel.caricaCommenti(token)
+        isRefreshing = false
     }
 
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Bacheca del gruppo") },
+                actions = {
+                    IconButton(onClick = { refreshData() }) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Aggiorna")
+                    }
+                }
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 navController.navigate("group_create_post/$gruppoId")
@@ -60,10 +99,28 @@ fun GroupFeedScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Bacheca del gruppo", style = MaterialTheme.typography.headlineSmall)
+            if (isRefreshing) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
 
-            if (posts.isEmpty()) {
-                Text("Nessun post in questo gruppo.")
+            if (posts.isEmpty() && !isRefreshing) {
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("Nessun post in questo gruppo.")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(onClick = { refreshData() }) {
+                            Text("Riprova")
+                        }
+                    }
+                }
             } else {
                 posts.forEach { post ->
                     var nuovoCommento by remember { mutableStateOf("") }
@@ -71,27 +128,32 @@ fun GroupFeedScreen(
                     Card(modifier = Modifier.fillMaxWidth()) {
                         Column(modifier = Modifier.padding(16.dp)) {
 
-                            Image(
-                                painter = rememberAsyncImagePainter(post.immagine),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(180.dp),
-                                contentScale = ContentScale.Crop
-                            )
+                            // Gestione sicura dell'immagine
+                            post.immagine?.let { imageUrl ->
+                                if (imageUrl.isNotBlank()) {
+                                    Image(
+                                        painter = rememberAsyncImagePainter(imageUrl),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(180.dp),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                }
+                            }
 
-                            Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                "Autore: ${post.autore_username}",
+                                "Autore: ${post.autore_username ?: "Sconosciuto"}",
                                 style = MaterialTheme.typography.labelMedium
                             )
-                            Text(post.descrizione)
+                            Text(post.descrizione ?: "Nessuna descrizione")
                             Text(
-                                "Posizione: ${post.latitudine}, ${post.longitudine}",
+                                "Posizione: ${post.latitudine ?: 0.0}, ${post.longitudine ?: 0.0}",
                                 style = MaterialTheme.typography.bodySmall
                             )
                             Text(
-                                "Data: ${post.data_pubblicazione.take(10)}",
+                                "Data: ${post.data_pubblicazione?.take(10) ?: "Data non disponibile"}",
                                 style = MaterialTheme.typography.bodySmall
                             )
 
@@ -121,7 +183,9 @@ fun GroupFeedScreen(
                             Button(
                                 onClick = {
                                     val userId = authViewModel.userProfile.value?.id
+                                    Log.d("GroupFeedScreen", "Button clicked - Token: ${token.isNotBlank()}, UserId: $userId, Commento: '$nuovoCommento'")
                                     if (token.isNotBlank() && userId != null && nuovoCommento.isNotBlank()) {
+                                        Log.d("GroupFeedScreen", "Chiamando aggiungiCommento...")
                                         commentViewModel.aggiungiCommento(
                                             CommentoRichiesta(
                                                 post = post.id,
@@ -130,9 +194,12 @@ fun GroupFeedScreen(
                                             ),
                                             token
                                         ) {
+                                            Log.d("GroupFeedScreen", "Callback eseguito, ricaricando commenti...")
                                             nuovoCommento = ""
                                             commentViewModel.caricaCommenti(token)
                                         }
+                                    }else{
+                                        Log.d("GroupFeedScreen", "Condizioni non soddisfatte per inviare commento")
                                     }
                                 },
                                 modifier = Modifier.align(Alignment.End)

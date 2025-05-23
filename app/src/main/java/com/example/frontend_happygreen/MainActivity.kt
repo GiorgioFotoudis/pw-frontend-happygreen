@@ -1,5 +1,6 @@
 package com.example.frontend_happygreen
 
+import NewPostScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,41 +27,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val authViewModel: AuthViewModel = viewModel()
                 val groupViewModel: GroupViewModel = viewModel()
-                /*NavHost(navController = navController, startDestination = "splash") {
-                    composable("splash") { SplashScreen(navController) }
-                    composable("login") { LoginScreen(navController) }
-                    composable("register") { RegisterScreen(navController) }
-                    composable("home") { HomeScreen(navController) }
-                    composable("group_create") {
-                        val authViewModel: AuthViewModel = viewModel()
-                        val token = authViewModel.token.collectAsState().value
-                        token?.let {
-                            GroupCreateFormScreen(
-                                token = it,
-                                onGroupCreated = { navController.navigate("home") }
-                            )
-                        } ?: Text("Token non disponibile")
-                    }
 
-                    composable("quiz") { QuizScreen() }
-                    composable("profile") { ProfileScreen(navController) }
-                    composable("scanner") { ScannerScreen() }
-                    composable("barcode_scanner") { BarcodeScannerScreen() }
-                    composable("group_feed/{groupId}",
-                        arguments = listOf(navArgument("groupId") { type = NavType.IntType })
-                    ) { backStackEntry ->
-                        val gruppoId = backStackEntry.arguments?.getInt("groupId") ?: return@composable
-                        val authViewModel: AuthViewModel = viewModel()
-                        val token = authViewModel.token.collectAsState().value ?: return@composable
-
-                        GroupFeedScreen(
-                            gruppoId = gruppoId,
-                            token = token,
-                            navController = navController,
-                            authViewModel = authViewModel
-                        )
-                    }
-                }*/
                 NavHost(navController = navController, startDestination = "splash") {
                     composable("splash") { SplashScreen(navController) }
                     composable("login") { LoginScreen(navController, authViewModel) }
@@ -95,14 +62,19 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(navArgument("groupId") { type = NavType.IntType })
                     ) { backStackEntry ->
                         val gruppoId = backStackEntry.arguments?.getInt("groupId") ?: return@composable
-                        val authViewModel: AuthViewModel = viewModel()
-                        val token = authViewModel.token.collectAsState().value ?: return@composable
+                        // CORREZIONE: usa l'istanza esistente di authViewModel invece di crearne una nuova
+                        val tokenState = authViewModel.token.collectAsState()
+                        val token = tokenState.value
 
-                        NewPostScreen(
-                            gruppoId = gruppoId,
-                            token = token,
-                            navController = navController
-                        )
+                        if (token == null) {
+                            Text("Attendi caricamento token...")
+                        } else {
+                            NewPostScreen(
+                                gruppoId = gruppoId,
+                                token = token,
+                                navController = navController
+                            )
+                        }
                     }
                 }
             }
