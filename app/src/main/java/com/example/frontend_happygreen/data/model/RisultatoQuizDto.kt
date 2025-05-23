@@ -4,9 +4,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RisultatoQuizDto(
-    val id: Int,
-    val utente: Int,
+    val id: Int? = null,
+    val utente: Int? = null,
     val quiz: Int,
+    val quiz_titolo: String? = null,
     val punteggio: Float,
-    val data: String
+    val data: String? = null
 )

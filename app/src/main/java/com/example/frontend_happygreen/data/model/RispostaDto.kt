@@ -5,6 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RispostaDto(
     val id: Int,
-    val testo: String,
-    val corretta: Boolean
+    val testo: String
 )

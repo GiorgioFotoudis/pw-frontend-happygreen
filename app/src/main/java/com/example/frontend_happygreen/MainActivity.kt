@@ -41,7 +41,12 @@ class MainActivity : ComponentActivity() {
                             }
                         } ?: Text("Token non disponibile")
                     }
-                    composable("quiz") { QuizScreen() }
+                    composable("quiz") {
+                        val token = authViewModel.token.collectAsState().value
+                        token?.let {
+                            QuizScreen(navController = navController, token = it)
+                        } ?: Text("Token non disponibile")
+                    }
                     composable("profile") { ProfileScreen(navController, authViewModel) }
                     composable("scanner") { ScannerScreen() }
                     composable("barcode_scanner") { BarcodeScannerScreen() }
@@ -62,7 +67,6 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(navArgument("groupId") { type = NavType.IntType })
                     ) { backStackEntry ->
                         val gruppoId = backStackEntry.arguments?.getInt("groupId") ?: return@composable
-                        // CORREZIONE: usa l'istanza esistente di authViewModel invece di crearne una nuova
                         val tokenState = authViewModel.token.collectAsState()
                         val token = tokenState.value
 
@@ -75,6 +79,12 @@ class MainActivity : ComponentActivity() {
                                 navController = navController
                             )
                         }
+                    }
+                    composable("group_search") {
+                        val token = authViewModel.token.collectAsState().value
+                        token?.let {
+                            GroupSearchScreen(navController = navController, token = it)
+                        } ?: Text("Token non disponibile")
                     }
                 }
             }

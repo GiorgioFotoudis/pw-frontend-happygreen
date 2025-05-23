@@ -84,23 +84,17 @@ interface ApiService {
         @Header("Authorization") token: String
     ): List<QuizDto>
 
-    @GET("api/quiz/risultati/")
-    suspend fun getUserQuizResults(
-        @Header("Authorization") token: String
-    ): List<RisultatoQuizDto>
-
-    @POST("api/quiz/risultati/")
-    suspend fun submitQuizResult(
-        @Header("Authorization") token: String,
-        @Body risultato: RisultatoQuizDto
-    ): RisultatoQuizDto
-
-    /*@POST("api/quiz/{quizId}/submit/")
+    @POST("api/quiz/{quizId}/submit/")
     suspend fun submitQuiz(
         @Path("quizId") quizId: Int,
         @Header("Authorization") token: String,
         @Body submission: QuizSubmissionDto
-    ): QuizResultDto*/
+    ): QuizResultDto
+
+    @GET("api/quiz/risultati/")
+    suspend fun getUserQuizResults(
+        @Header("Authorization") token: String
+    ): List<RisultatoQuizDto>
 
     // ---------- PRODOTTI ----------
     @GET("api/prodotti/")
