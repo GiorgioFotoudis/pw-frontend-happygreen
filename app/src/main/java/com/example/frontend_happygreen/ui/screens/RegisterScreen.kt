@@ -76,7 +76,7 @@ fun RegisterScreen(
     ) {
         // Back Button
         IconButton(
-            onClick = { navController.popBackStack() },
+            onClick = { navController.navigate("home") },
             modifier = Modifier
                 .padding(16.dp)
                 .background(

@@ -53,12 +53,11 @@ interface ApiService {
         @Header("Authorization") token: String
     ): List<PostDto>
 
-    // CORREZIONE: gruppo deve essere RequestBody, non Int diretto
     @Multipart
     @POST("api/posts/")
     suspend fun creaPost(
         @Header("Authorization") token: String,
-        @Part("gruppo") gruppo: RequestBody, // Cambiato da Int a RequestBody
+        @Part("gruppo") gruppo: RequestBody,
         @Part("descrizione") descrizione: RequestBody,
         @Part("latitudine") latitudine: RequestBody,
         @Part("longitudine") longitudine: RequestBody,
