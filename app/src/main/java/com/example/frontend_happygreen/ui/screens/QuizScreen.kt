@@ -919,8 +919,6 @@ private fun QuizResultContent(
                         border = BorderStroke(2.dp, EcoGreen600),
                         shape = RoundedCornerShape(16.dp)
                     ) {
-                        Icon(Icons.Default.List, contentDescription = null)
-                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             "Tutti i quiz",
                             style = MaterialTheme.typography.labelLarge.copy(
@@ -939,8 +937,6 @@ private fun QuizResultContent(
                         ),
                         shape = RoundedCornerShape(16.dp)
                     ) {
-                        Icon(Icons.Default.Refresh, contentDescription = null)
-                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             "Riprova",
                             style = MaterialTheme.typography.labelLarge.copy(
