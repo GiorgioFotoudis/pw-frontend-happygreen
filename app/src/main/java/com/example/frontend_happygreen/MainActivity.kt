@@ -1,6 +1,6 @@
 package com.example.frontend_happygreen
 
-import NewPostScreen
+import com.example.frontend_happygreen.ui.screens.NewPostScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent

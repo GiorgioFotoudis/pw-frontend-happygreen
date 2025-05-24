@@ -15,7 +15,7 @@ class CommentViewModel : ViewModel() {
     private val _commenti = MutableStateFlow<List<CommentoDto>>(emptyList())
     val commenti: StateFlow<List<CommentoDto>> get() = _commenti
 
-    fun caricaCommenti(token: String) {
+    fun caricaCommenti(token: String, function: () -> Unit) {
         viewModelScope.launch {
             runCatching {
                 api.getCommenti("Bearer $token")
